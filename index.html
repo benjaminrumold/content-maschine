@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content-Maschine | @aic.benji</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0f0f0f;
+  --card: #1a1a1a;
+  --card-hover: #222222;
+  --border: #2a2a2a;
+  --accent: #00ff88;
+  --accent-dim: #00cc6a;
+  --orange: #ff6b35;
+  --orange-dim: #cc5529;
+  --text: #e8e8e8;
+  --text-dim: #888888;
+  --text-muted: #555555;
+  --danger: #ff4444;
+  --purple: #a855f7;
+  --blue: #3b82f6;
+  --yellow: #fbbf24;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* HEADER */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(15,15,15,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+}
+.header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 800;
+  font-size: 18px;
+}
+.logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--accent), var(--orange));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.logo span { color: var(--accent); }
+
+/* NAV TABS */
+.nav-tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--card);
+  border-radius: 10px;
+  padding: 4px;
+}
+.nav-tab {
+  padding: 8px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-dim);
+  transition: all 0.25s ease;
+  border: none;
+  background: none;
+  white-space: nowrap;
+}
+.nav-tab:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+.nav-tab.active { color: var(--bg); background: var(--accent); font-weight: 600; }
+
+.user-badge {
+  font-size: 13px;
+  color: var(--text-dim);
+  display: flex; align-items: center; gap: 8px;
+}
+.user-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+
+/* MAIN */
+.main { max-width: 1400px; margin: 0 auto; padding: 24px 32px 80px; }
+
+/* TAB PANELS */
+.tab-panel { display: none; animation: fadeIn 0.3s ease; }
+.tab-panel.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* SECTION HEADERS */
+.section-title {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+.section-sub {
+  color: var(--text-dim);
+  font-size: 14px;
+  margin-bottom: 28px;
+}
+
+/* CARDS */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  transition: border-color 0.2s;
+}
+.card:hover { border-color: #333; }
+
+/* GRID */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+/* STAT CARDS */
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.stat-card .label { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.stat-card .value { font-size: 28px; font-weight: 800; }
+.stat-card .change { font-size: 12px; margin-top: 4px; }
+.stat-card .change.up { color: var(--accent); }
+.stat-card .change.down { color: var(--danger); }
+
+/* FORM ELEMENTS */
+.form-group { margin-bottom: 18px; }
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.form-select, .form-input, .form-textarea {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+  transition: border-color 0.2s;
+  outline: none;
+}
+.form-select:focus, .form-input:focus, .form-textarea:focus {
+  border-color: var(--accent);
+}
+.form-select option { background: var(--bg); }
+.form-textarea { resize: vertical; min-height: 80px; }
+
+/* BUTTONS */
+.btn {
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-primary {
+  background: var(--accent);
+  color: var(--bg);
+}
+.btn-primary:hover { background: var(--accent-dim); transform: translateY(-1px); }
+.btn-orange {
+  background: var(--orange);
+  color: #fff;
+}
+.btn-orange:hover { background: var(--orange-dim); transform: translateY(-1px); }
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+.btn-sm { padding: 8px 14px; font-size: 12px; }
+.btn-lg { padding: 16px 32px; font-size: 16px; }
+
+/* TAGS */
+.tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.tag-green { background: rgba(0,255,136,0.12); color: var(--accent); }
+.tag-orange { background: rgba(255,107,53,0.12); color: var(--orange); }
+.tag-purple { background: rgba(168,85,247,0.12); color: var(--purple); }
+.tag-blue { background: rgba(59,130,246,0.12); color: var(--blue); }
+.tag-yellow { background: rgba(251,191,36,0.12); color: var(--yellow); }
+
+/* BAR CHART */
+.bar-chart { display: flex; flex-direction: column; gap: 12px; }
+.bar-row { display: flex; align-items: center; gap: 12px; }
+.bar-label { width: 140px; font-size: 13px; color: var(--text-dim); text-align: right; flex-shrink: 0; }
+.bar-track { flex: 1; height: 28px; background: rgba(255,255,255,0.04); border-radius: 6px; overflow: hidden; position: relative; }
+.bar-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 10px; font-size: 11px; font-weight: 700; color: var(--bg); transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+.bar-value { width: 50px; font-size: 13px; font-weight: 600; text-align: right; flex-shrink: 0; }
+
+/* SCRIPT OUTPUT */
+.script-output {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  font-size: 14px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+.script-section {
+  margin-bottom: 16px;
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  border-left: 3px solid;
+}
+.script-section.hook { border-color: var(--orange); background: rgba(255,107,53,0.06); }
+.script-section.problem { border-color: var(--purple); background: rgba(168,85,247,0.06); }
+.script-section.proof { border-color: var(--accent); background: rgba(0,255,136,0.06); }
+.script-section.method { border-color: var(--blue); background: rgba(59,130,246,0.06); }
+.script-section.cta { border-color: var(--yellow); background: rgba(251,191,36,0.06); }
+.script-section .section-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.script-section.hook .section-label { color: var(--orange); }
+.script-section.problem .section-label { color: var(--purple); }
+.script-section.proof .section-label { color: var(--accent); }
+.script-section.method .section-label { color: var(--blue); }
+.script-section.cta .section-label { color: var(--yellow); }
+
+/* TOOLTIP / BADGE */
+.engagement-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;
+}
+.engagement-high { background: rgba(0,255,136,0.15); color: var(--accent); }
+.engagement-mid { background: rgba(251,191,36,0.15); color: var(--yellow); }
+.engagement-low { background: rgba(255,68,68,0.15); color: var(--danger); }
+
+/* VIDEO CARD */
+.video-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: all 0.25s;
+  cursor: default;
+}
+.video-card:hover { border-color: #444; transform: translateY(-2px); }
+.video-card .vc-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+.video-card .vc-author { font-size: 13px; font-weight: 600; color: var(--accent); }
+.video-card .vc-duration { font-size: 12px; color: var(--text-dim); background: var(--bg); padding: 3px 8px; border-radius: 4px; }
+.video-card .vc-hook { font-size: 16px; font-weight: 700; margin-bottom: 8px; line-height: 1.3; }
+.video-card .vc-stats { display: flex; gap: 16px; font-size: 12px; color: var(--text-dim); margin-bottom: 12px; }
+.video-card .vc-stats span { display: flex; align-items: center; gap: 4px; }
+.video-card .vc-transcript {
+  font-size: 13px; color: var(--text-dim); line-height: 1.6;
+  max-height: 0; overflow: hidden; transition: max-height 0.4s ease;
+}
+.video-card .vc-transcript.open { max-height: 600px; }
+.video-card .vc-toggle {
+  font-size: 12px; color: var(--accent); cursor: pointer;
+  border: none; background: none; font-family: inherit; font-weight: 500;
+  padding: 4px 0; margin-top: 8px;
+}
+.video-card .vc-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+
+/* MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  align-items: center; justify-content: center;
+  padding: 24px;
+}
+.modal-overlay.active { display: flex; }
+.modal {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  max-width: 700px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+  padding: 32px;
+}
+.modal-title { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
+.modal pre {
+  background: var(--bg);
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-x: auto;
+  color: var(--text-dim);
+}
+.modal-close {
+  position: absolute; top: 16px; right: 16px;
+  background: none; border: none; color: var(--text-dim);
+  font-size: 24px; cursor: pointer;
+}
+
+/* COPY BUTTON */
+.copy-btn {
+  padding: 6px 12px;
+  font-size: 11px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+.copy-btn.copied { border-color: var(--accent); color: var(--accent); }
+
+/* SCROLL */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #444; }
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .grid-4 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .header { padding: 0 16px; }
+  .main { padding: 16px; }
+  .grid-4, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+  .nav-tabs { overflow-x: auto; }
+  .generator-layout { grid-template-columns: 1fr !important; }
+}
+
+.generator-layout {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Hover overlay for patterns */
+.pattern-card {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.pattern-card:hover { border-color: var(--accent); }
+.pattern-card.selected { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+
+.heygen-box {
+  margin-top: 20px;
+  padding: 20px;
+  background: rgba(255,107,53,0.06);
+  border: 1px solid rgba(255,107,53,0.2);
+  border-radius: var(--radius);
+}
+
+.overlay-suggestion {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin: 6px 0;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.overlay-suggestion .time { color: var(--orange); font-weight: 700; font-size: 11px; min-width: 40px; }
+
+.alt-hook {
+  padding: 10px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin: 6px 0;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.alt-hook .num { color: var(--accent); font-weight: 800; font-size: 12px; }
+
+/* SCORE GAUGES */
+.scores-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.score-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; display: flex; align-items: center; gap: 20px; }
+.score-gauge { position: relative; width: 90px; height: 90px; flex-shrink: 0; }
+.score-gauge svg { transform: rotate(-90deg); }
+.score-gauge .track { fill: none; stroke: var(--border); stroke-width: 8; }
+.score-gauge .fill { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 1s cubic-bezier(0.22,1,0.36,1); }
+.score-gauge .value { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; }
+.score-info h3 { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+.score-info .score-detail { font-size: 12px; color: var(--text-dim); line-height: 1.6; }
+.score-info .score-detail .pos { color: var(--accent); }
+.score-info .score-detail .neg { color: var(--danger); }
+.score-info .score-detail .warn { color: var(--yellow); }
+
+/* REFRESH BUTTON */
+.btn-refresh { background: transparent; border: 1px solid var(--border); color: var(--text-dim); }
+.btn-refresh:hover { border-color: var(--accent); color: var(--accent); }
+.btn-refresh.spinning .refresh-icon { animation: spin 0.6s ease; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* POLICY ITEMS */
+.policy-item { display: flex; align-items: center; gap: 6px; font-size: 12px; margin: 3px 0; }
+.policy-item .check { color: var(--accent); font-weight: 700; }
+.policy-item .cross { color: var(--danger); font-weight: 700; }
+.policy-item .warn-icon { color: var(--yellow); font-weight: 700; }
+
+@media (max-width: 768px) { .scores-row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">⚡</div>
+      Content-<span>Maschine</span>
+    </div>
+    <div class="nav-tabs">
+      <button class="nav-tab" data-tab="generator" onclick="switchTab('generator')">Content Generator</button>
+      <button class="nav-tab" data-tab="dashboard" onclick="switchTab('dashboard')">Dashboard</button>
+      <button class="nav-tab" data-tab="analysis" onclick="switchTab('analysis')">Muster-Analyse</button>
+      <button class="nav-tab" data-tab="database" onclick="switchTab('database')">Video-Datenbank</button>
+    </div>
+    <div class="user-badge">
+      <div class="dot"></div>
+      @aic.benji
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ==================== CONTENT GENERATOR TAB ==================== -->
+  <div class="tab-panel" id="tab-generator">
+    <div class="section-title">Skript generieren</div>
+    <div class="section-sub">Wähle ein bewährtes Muster und generiere ein fertiges TikTok-Skript in Sekunden.</div>
+
+    <div class="generator-layout">
+      <!-- LEFT: Form -->
+      <div>
+        <div class="card" style="position: sticky; top: 88px;">
+          <div class="form-group">
+            <label class="form-label">Vorlage wählen</label>
+            <select class="form-select" id="gen-template">
+              <option value="">— Vorlage auswählen —</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Hook-Typ</label>
+            <select class="form-select" id="gen-hook">
+              <option value="income_claim">💰 Income Claim ("X Euro verdient")</option>
+              <option value="provocation">🔥 Provokation ("dümmster Weg")</option>
+              <option value="best_of">🏆 Best-Of ("bester Nebenjob 2026")</option>
+              <option value="fomo">⏰ FOMO/Scarcity ("3 Sekunden weiterscrollen")</option>
+              <option value="celebrity">⭐ Celebrity-Hook</option>
+              <option value="system">⚙️ System-Pitch ("du brauchst ein anderes System")</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Produkt / Thema</label>
+            <input class="form-input" id="gen-product" placeholder="z.B. Check24, Amazon, IKEA, Lego...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Video-Länge</label>
+            <select class="form-select" id="gen-length">
+              <option value="short">Kurz (20–30 Sekunden)</option>
+              <option value="medium">Mittel (40–60 Sekunden)</option>
+              <option value="long">Lang (80–100 Sekunden)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">CTA-Typ</label>
+            <select class="form-select" id="gen-cta">
+              <option value="comment_info">💬 "Kommentier Info"</option>
+              <option value="follow_comment">👤 "Folge mir + Kommentier"</option>
+              <option value="save_comment">📌 "Speicher + Kommentier"</option>
+              <option value="dm_info">✉️ "DM mir Info"</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Trend / Angle (optional)</label>
+            <input class="form-input" id="gen-trend" placeholder="z.B. Sommer-Sale, EM 2026, AI-Hype...">
+          </div>
+          <div style="display: flex; gap: 8px; margin-top: 8px;">
+            <button class="btn btn-primary btn-lg" style="flex: 1; justify-content: center;" onclick="generateScript()">
+              ⚡ Skript generieren
+            </button>
+            <button class="btn btn-refresh btn-lg" id="refresh-btn" onclick="refreshScript()" title="Neue Variation generieren" style="padding: 16px;">
+              <span class="refresh-icon" style="display: inline-block;">🔄</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Output -->
+      <div id="generator-output">
+        <div class="card" style="text-align: center; padding: 60px 24px; color: var(--text-muted);">
+          <div style="font-size: 48px; margin-bottom: 16px;">🎬</div>
+          <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">Kein Skript generiert</div>
+          <div style="font-size: 13px;">Wähle links deine Einstellungen und klicke auf "Skript generieren".</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== DASHBOARD TAB ==================== -->
+  <div class="tab-panel" id="tab-dashboard">
+    <div class="section-title">Performance Dashboard</div>
+    <div class="section-sub">Überblick über alle 11 analysierten TikTok-Videos.</div>
+
+    <div class="grid-4" id="dashboard-stats" style="margin-bottom: 28px;"></div>
+
+    <div class="grid-2" style="margin-bottom: 28px;">
+      <div class="card">
+        <div style="font-size: 15px; font-weight: 700; margin-bottom: 16px;">Engagement nach Hook-Typ</div>
+        <div id="chart-hooks" class="bar-chart"></div>
+      </div>
+      <div class="card">
+        <div style="font-size: 15px; font-weight: 700; margin-bottom: 16px;">Engagement nach Video-Länge</div>
+        <div id="chart-length" class="bar-chart"></div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div style="font-size: 15px; font-weight: 700; margin-bottom: 16px;">Engagement nach CTA-Typ</div>
+        <div id="chart-cta" class="bar-chart"></div>
+      </div>
+      <div class="card">
+        <div style="font-size: 15px; font-weight: 700; margin-bottom: 16px;">Top-Video Analyse</div>
+        <div id="top-video-analysis"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 28px;">
+      <div style="font-size: 15px; font-weight: 700; margin-bottom: 16px;">Durchschnittliche Engagement-Rate nach Creator</div>
+      <div id="chart-creators" class="bar-chart"></div>
+    </div>
+  </div>
+
+  <!-- ==================== MUSTER-ANALYSE TAB ==================== -->
+  <div class="tab-panel" id="tab-analysis">
+    <div class="section-title">Muster-Analyse</div>
+    <div class="section-sub">Bewährte Patterns aus 11 echten TikTok-Videos — Hook-Typen, Strukturen und CTAs.</div>
+
+    <div style="font-size: 17px; font-weight: 700; margin-bottom: 16px;">Hook-Typen</div>
+    <div class="grid-3" id="hook-types-grid" style="margin-bottom: 36px;"></div>
+
+    <div style="font-size: 17px; font-weight: 700; margin-bottom: 16px;">Video-Strukturen</div>
+    <div class="grid-3" id="structures-grid" style="margin-bottom: 36px;"></div>
+
+    <div style="font-size: 17px; font-weight: 700; margin-bottom: 16px;">CTA-Typen</div>
+    <div class="grid-4" id="cta-types-grid" style="margin-bottom: 36px;"></div>
+
+    <div class="card">
+      <div style="font-size: 17px; font-weight: 700; margin-bottom: 16px;">Engagement-Korrelationen</div>
+      <div id="correlations"></div>
+    </div>
+  </div>
+
+  <!-- ==================== VIDEO-DATENBANK TAB ==================== -->
+  <div class="tab-panel" id="tab-database">
+    <div class="section-title">Video-Datenbank</div>
+    <div class="section-sub">Alle 11 analysierten Videos mit Transkripten, Stats und Pattern-Tags.</div>
+
+    <div style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;">
+      <button class="btn btn-sm btn-outline filter-btn active" data-filter="all" onclick="filterVideos('all', this)">Alle (11)</button>
+      <button class="btn btn-sm btn-outline filter-btn" data-filter="@aic.benji" onclick="filterVideos('@aic.benji', this)">@aic.benji (5)</button>
+      <button class="btn btn-sm btn-outline filter-btn" data-filter="@lin_masty" onclick="filterVideos('@lin_masty', this)">@lin_masty (2)</button>
+      <button class="btn btn-sm btn-outline filter-btn" data-filter="@vincepaths" onclick="filterVideos('@vincepaths', this)">@vincepaths (4)</button>
+    </div>
+
+    <div class="grid-2" id="video-grid"></div>
+  </div>
+
+</div>
+
+<!-- HeyGen Modal -->
+<div class="modal-overlay" id="heygen-modal">
+  <div class="modal" style="position: relative;">
+    <button class="modal-close" onclick="closeHeygenModal()">&times;</button>
+    <div class="modal-title">🎬 HeyGen Prompt</div>
+    <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 16px;">Kopiere diesen Prompt und verwende ihn mit dem Lisa-Avatar in HeyGen, oder sende ihn direkt per Zapier Webhook.</p>
+    <pre id="heygen-prompt-text"></pre>
+    <div style="display: flex; gap: 10px; margin-top: 16px;">
+      <button class="btn btn-primary" onclick="copyHeygenPrompt()">📋 Prompt kopieren</button>
+      <button class="btn btn-orange" onclick="sendToHeyGen()">🚀 An HeyGen senden (Zapier)</button>
+    </div>
+    <div id="heygen-status" style="margin-top: 12px; font-size: 13px;"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// VIDEO DATABASE
+// ============================================================
+const videos = [
+  {
+    id: "7627502583011085600",
+    author: "@aic.benji",
+    duration: 23,
+    stats: { likes: 337, comments: 199, saves: 517, plays: 15400 },
+    transcript: "okay das ist gerade der beste Nebenjob in 2026 alles was du dafür machen musst ist dir diese eine App runterzuladen danach musst du 3 Sachen miteinander kombinieren schau genau hin du erstellst ein Video auf Social Media leitest die Leute auf eine Webseite und verdienst von dort aus Geld um genau zu verstehen was du machen musst kommentier einmal Info und ich schicke dir alles kostenlos zu wie gesagt es ist komplett kostenlos und es dauert nur 10 Minuten am Tag um es aufzusetzen",
+    hook_type: "best_of",
+    hook_text: "bester Nebenjob 2026",
+    structure: "short_hook_method_cta",
+    cta_type: "comment_info",
+    get engagement_rate() { return ((this.stats.likes + this.stats.comments + this.stats.saves) / this.stats.plays * 100).toFixed(2); }
+  },
+  {
+    id: "7639371859288509728",
+    author: "@aic.benji",
+    duration: 89,
+    stats: { likes: 253, comments: 124, saves: 466, plays: 17100 },
+    transcript: "du brauchst keinen Nebenjob du brauchst diese App und KI warum weil das nicht nur cooler ist als jeder Nebenjob sondern du bist dein eigener Chef bestimmst wann du arbeiten möchtest und wenn du mir bis zum Ende zuschaust dann zeige ich dir genau wie du das machen kannst also pass auf alles was du brauchst ist dein Handy und dieses eine App dann lässt du dir mit KI Bilder oder Videos erstellen die Leute finden das richtig gut und teilen deine Sachen und wenn jemand über deinen Link ein Produkt kauft dann bekommst du dafür eine Provision ohne eigenes Produkt ohne Startkapital ohne Erfahrung das Geile daran du musst nicht mal selbst kreativ sein ich zeige dir zum Beispiel die Prompts die du bei Claude eingeben musst das ist eine KI die erstellt dir innerhalb von 2 Minuten richtig gute Bilder also jetzt mal Klartext du lässt die KI für dich arbeiten postest das auf Social Media verlinkst ein Produkt fertig so verdienst du Geld damit du also genau weißt wie du dir das aufsetzt habe ich eine komplette Anleitung vorbereitet kommentier einfach das Wort Info und ich schicke dir alles komplett kostenlos zu",
+    hook_type: "system",
+    hook_text: "du brauchst keinen Nebenjob, du brauchst diese App und KI",
+    structure: "long_hook_proof_skeptic_method_cta",
+    cta_type: "comment_info",
+    get engagement_rate() { return ((this.stats.likes + this.stats.comments + this.stats.saves) / this.stats.plays * 100).toFixed(2); }
+  },
+  {
+    id: "7639372775764823329",
+    author: "@aic.benji",
+    duration: 34,
+    stats: { likes: 152, comments: 129, saves: 231, plays: 8800 },
+    transcript: "du brauchst nur diese eine Website und diese eine App und das ist möglich schaut hier sind meine Umsätze von den letzten 30 Tagen es handelt sich hierbei um Affiliate Marketing und um genau zu verstehen wie das funktioniert habe ich eine kostenlose Anleitung vorbereitet kommentier einfach Info dann schicke ich es dir zu ich zeige dir dann wie du dir das Ganze mit KI aufsetzen kannst um selber solche Ergebnisse zu erzielen",
+    hook_type: "income_claim",
+    hook_text: "du brauchst nur diese eine Website und diese eine App",
+    structure: "short_hook_method_cta",
+    cta_type: "comment_info",
+    get engagement_rate() { return ((this.stats.likes + this.stats.comments + this.stats.saves) / this.stats.plays * 100).toFixed(2); }
+  },
+  {
+    id: "7628549573048323361",
+    author: "@aic.benji",
+    duration: 134,
+    stats: { likes: 119, comments: 43, saves: 199, plays: 6600 },
+    transcript: "Online Geld verdienen von zu Hause mit KI und Lego ja du hast richtig gehört und zwar geht es um Affiliate Marketing Lego hat ein eigenes Partnerprogramm auf seiner Website das ist eine seriöse Firma ist kein Scam oder sonst irgendwas das heißt wenn ich jemanden auf die Lego Website weiterleite und die Person kauft sicj zum Beispiel dieses Set für 230 Euro dann bekomme ich dafür eine Provision von 3 Prozent also knapp 7 Euro pro Verkauf und das coole ist ich brauche dafür kein eigenes Produkt kein Lager gar nichts ich muss nur Leute auf die Seite weiterleiten und wenn die was kaufen werde ich bezahlt der ganze Prozess funktioniert über Social Media ich erstelle also Content und baue mir eine Community auf die sich für Lego interessiert und wie erstelle ich den Content mit KI und zwar benutze ich Chat GPT und Claude das sind beides KI Tools mit denen ich Texte Bilder und Videos erstellen kann die Leute finden das richtig gut und teilen das das heißt ich brauche nur mein Handy und diese KI Tools und kann von überall aus arbeiten und ich mache nicht nur Lego das geht auch mit anderen Produkten Amazon Check24 MediaMarkt da gibt es überall Partnerprogramme wenn du jetzt wissen willst wie du dir das Ganze selbst aufbauen kannst dann folge mir einfach und kommentier Info dann schicke ich dir eine kostenlose Schritt für Schritt Anleitung",
+    hook_type: "provocation",
+    hook_text: "Online Geld verdienen mit KI und Lego",
+    structure: "long_educational_steps_cta",
+    cta_type: "follow_comment",
+    get engagement_rate() { return ((this.stats.likes + this.stats.comments + this.stats.saves) / this.stats.plays * 100).toFixed(2); }
+  },
+  {
+    id: "7639049943948315937",
+    author: "@aic.benji",
+    duration: 43,
+    stats: { likes: 52, comments: 43, saves: 74, plays: 3200 },
+    transcript: "Bester Nebenjob 2026 pass auf du brauchst diese eine App und diesen einen Anbieter es handelt sich um Affiliate Marketing das heißt du empfiehlst Produkte von Firmen wie Check24 MediaMarkt oder IKEA und bekommst dafür eine Provision also pro Verkauf eine Vergütung wie die App nutze ich um KI generierten Content zu erstellen und auf Social Media zu posten die Person die über meinen Link kauft bringt mir Geld ein eine einzige Person hat mit dieser Methode über 900 K gemacht ganz einfach von zu Hause aus um jetzt genau zu verstehen wie du dir das Ganze aufsetzt habe ich eine kostenlose Anleitung vorbereitet Kommentier einfach Info und ich schicke dir alles zu",
+    hook_type: "best_of",
+    hook_text: "Bester Nebenjob 2026",
+    structure: "short_hook_method_cta",
+    cta_type: "comment_info",
+    get engagement_rate() { return ((this.stats.likes + this.stats.comments + this.stats.saves) / this.stats.plays * 100).toFixed(2); }
+  },
+  {
+    id: "7637486450480532769",
+    author: "@lin_masty",
+    duration: 99,
+    stats: { likes: 1787, comments: 902, saves: 1702, plays: 77100 },
+    transcript: "wenn du jetzt 3 Sekunden weiter scrollst verlierst du die einfachste Möglichkeit online Geld zu verdienen 2025 also ich hab das ganze einfach probiert und jetzt schaut euch das an hier sehen wir allein im Mai hab ich über 18.314 Euro verdient und bevor ihr alle jetzt sagt ja das ist Fake oder so ne hier einmal Kontoauszug ihr könnt sehen wann die ausgezahlt werden 3.000 1.000 2.000 4.000 also an alle Skeptiker hört mal zu und ich mach das Ganze von zu Hause ohne Chef und ohne klassischen nine to five Job das ganze Konzept basiert auf Affiliate Marketing und K I wenn du dir jetzt unter Affiliate Marketing nichts vorstellen kannst stell dir einfach vor ein Kumpel fragt dich Hey welches Gym soll ich nehmen und du sagst nimm FitX die haben die besten Preise und weil du deinen Kumpel dahin empfohlen hast gibt dir FitX was dafür so einfach muss man sich das vorstellen nur halt online mit K I Tools und das schöne daran ich zeig euch jetzt genau wie das funktioniert also Schritt 1 du wählst ein Produkt und davon gibt es tausende nimmt als Beispiel einfach Amazon Schritt 2 du erstellst mit K I in wenigen Minuten Content wie zB kurze Videos Bilder oder Texte und Schritt 3 du postest das auf Social Media ob TikTok Instagram oder YouTube und wenn jemand über deinen Link kauft bekommst du eine Provision ich hab in meinem Profil eine gratis Anleitung hinterlegt wo du alles Schritt für Schritt erklärt bekommst in wenigen Minuten und das komplett kostenlos mach das jetzt bevor es zu viele machen also folgt einmal und kommentiert K I dann schicke ich euch alles zu",
+    hook_type: "fomo",
+    hook_text: "3 Sekunden weiterscrollen",
+    structure: "long_hook_proof_skeptic_method_cta",
+    cta_type: "follow_comment",
+    get engagement_rate() { return ((this.stats.likes + this.stats.comments + this.stats.saves) / this.stats.plays * 100).toFixed(2); }
+  },
+  {
+    id: "7631171078844353824",
+    author: "@lin_masty",
+    duration: 82,
+    stats: { likes: 887, comments: 594, saves: 887, plays: 43000 },
+    transcript: "du brauchst nicht mehr Zeit du brauchst 1 anderes System ich habe diesen Monat bereits über 18 K verdient ohne klassischen Job ohne Chef ohne nine to five und nein das Kam nicht durch mehr Arbeit sondern durch eine andere Art zu arbeiten hier noch mal dass ihr Mir glaubt das hier hab ich in diesen Monat verdient und es ist noch nicht mal Ende des Monats es ist gerade Mitte des Monats und schaut 18.314 Euro bevor ich jetzt erkläre wie das ganze funktioniert Speicher dir dieses Video AB und like es einmal kurz du wirst es später noch mal verstehen wollen also ich mache hier kein Influencer Game ich zeige auch hier kein Gesicht ich poste kein Lifestyle ich baue einfach nur anonyme Social Media Accounts auf und diese Accounts Laden Videos hoch unter diesen Videos entstehen automatisch Kommentare und echte Interessenten diese Anfragen leite ich an Unternehmen weiter und werde einfach dafür großzügig bezahlt und mehr passiert hier nicht und allein diesen Monat sind schon bereits 18.000 und jetzt kommt das was die meisten nicht checken ich arbeite dafür keine 89 Stunden am Tag diese Accounts laufen einfach im Hintergrund automatisiert durch K I Agents die ich selber mit Chat gbt erstellt habe alles was ich dafür brauche ist einfach nur Mein Handy WLAN mehr nich und genau das hast du gerade also wenn du jetzt verstehen willst wie dieses System funktioniert und wie du es jetzt selbst aufbauen kannst dann folge Mir einfach damit ich dir schreiben kann und kommentier einmal jetzt K I einfach in die Kommentare",
+    hook_type: "system",
+    hook_text: "du brauchst nicht mehr Zeit, du brauchst ein anderes System",
+    structure: "long_hook_proof_skeptic_method_cta",
+    cta_type: "follow_comment",
+    get engagement_rate() { return ((this.stats.likes + this.stats.comments + this.stats.saves) / this.stats.plays * 100).toFixed(2); }
+  },
+  {
+    id: "7642374349495864609",
+    author: "@vincepaths",
+    duration: 66,
+    stats: { likes: 518, comments: 167, saves: 505, plays: 17200 },
+    transcript: "Schreib mir Info für die Anleitung das hier ist ernsthaft der dümmste Weg um in 2025 Geld zu verdienen und ich zeig dir jetzt wie du das auch machen kannst Schau dir das an ich suche mir einfach ein Produkt wie zum Beispiel diese Adidas Schuhe dann nutze ich ChatGPT um in wenigen Sekunden eine Werbung dafür zu erstellen und dann poste ich das Ganze auf meinem Social Media Account wenn sich jemand über meinen Link diese Schuhe kauft dann bekomm ich dafür eine Provision und das für Tausende von Produkten und allein in den letzten 2 Wochen hab ich hier über 27.000 Euro verdient ganz einfach mit Affiliate Marketing und dem Ganzen dafür brauchst du kein eigenes Produkt kein Startkapital und keine Vorerfahrung nur dein Handy und eine KI Tool und mehr brauchst du nicht wenn du jetzt genau wissen willst wie du dir sowas aufbauen kannst dann kommentier jetzt einmal Info und ich schick dir alles komplett kostenlos zu",
+    hook_type: "provocation",
+    hook_text: "dümmster Weg Geld zu verdienen",
+    structure: "long_hook_proof_skeptic_method_cta",
+    cta_type: "comment_info",
+    get engagement_rate() { return ((this.stats.likes + this.stats.comments + this.stats.saves) / this.stats.plays * 100).toFixed(2); }
+  },
+  {
+    id: "7642088013350079777",
+    author: "@vincepaths",
+    duration: 51,
+    stats: { likes: 339, comments: 142, saves: 257, plays: 16600 },
+    transcript: "wenn du nichts kannst dann mach das hier und verdien Geld damit ich erklär's dir in unter einer Minute und zeig dir wie das möglich ist Schau dir das an allein in den letzten 2 Wochen hab ich über 27 K verdient alles von zu Hause und es ist egal ob du 16 oder 60 bist klingt zu schön um wahr zu sein ist es aber nicht hier ist der einfachste Weg um deine ersten 5000 Euro online zu verdienen alles was du brauchst ist ein Handy und eine KI die für dich arbeitet du suchst dir einfach ein Produkt aus erstellst mit KI Werbung dafür postest es auf Social Media und wenn jemand über deinen Link kauft bekommst du eine Provision so einfach ist das wenn du jetzt wissen willst wie du das Schritt für Schritt aufsetzt dann DM mir jetzt einmal Info und ich schick dir die Anleitung komplett kostenlos",
+    hook_type: "provocation",
+    hook_text: "wenn du nichts kannst, dann mach das hier",
+    structure: "short_hook_method_cta",
+    cta_type: "dm_info",
+    get engagement_rate() { return ((this.stats.likes + this.stats.comments + this.stats.saves) / this.stats.plays * 100).toFixed(2); }
+  },
+  {
+    id: "7641350991006272800",
+    author: "@vincepaths",
+    duration: 44,
+    stats: { likes: 313, comments: 111, saves: 349, plays: 21700 },
+    transcript: "ich habe 30 Tage lang TikTok Videos gepostet und allein in den letzten 14 Tagen damit 5000 Euro verdient hier einmal der Beweis wie das funktioniert ich öffne Chat GPT und lass mir Videoideen für Affiliate Marketing geben dann erstelle ich ein kurzes Video poste es und wenn jemand das Produkt über meinen Link kauft bekomme ich eine Provision auf Plattformen wie DigiStore findest du tausende Produkte die du bewerben kannst du brauchst kein eigenes Produkt kein Startkapital und keine Erfahrung und je mehr Videos du postest desto mehr Leute sehen es und desto mehr verdienst du wenn du jetzt wissen willst wie das genau funktioniert folge mir und kommentier Info dann schicke ich dir die Anleitung komplett kostenlos zu",
+    hook_type: "income_claim",
+    hook_text: "30 Tage TikTok Videos gepostet, 5000 Euro verdient",
+    structure: "long_educational_steps_cta",
+    cta_type: "follow_comment",
+    get engagement_rate() { return ((this.stats.likes + this.stats.comments + this.stats.saves) / this.stats.plays * 100).toFixed(2); }
+  },
+  {
+    id: "7637271807912840481",
+    author: "@vincepaths",
+    duration: 61,
+    stats: { likes: 7534, comments: 952, saves: 7612, plays: 241400 },
+    transcript: "Fun Fact Cristiano Ronaldo verdient Millionen allein mit Affiliate Marketing auf seinem Instagram und du kannst das jetzt auch also ich zeige dir jetzt wie du auf dem einfachsten Weg einen Nebenjob in unter 10 Minuten aufsetzen kannst pass auf es gibt das Amazon Partnerprogramm dort gibt es Millionen von Produkten die du bewerben kannst du nimmst dir den Partnerlink zu einem Produkt dann öffnest du Chat GPT und gibst diesen Prompt ein den ich dir gleich zeige die KI erstellt dir ein Skript daraus machst du ein kurzes Video und wenn jemand über deinen Link ein Produkt kauft verdienst du Geld damit und das funktioniert auch für andere Plattformen wie IKEA Check24 und viele weitere das Gute daran du brauchst kein eigenes Produkt du brauchst kein Startkapital und du kannst komplett von zu Hause arbeiten wenn du jetzt genau wissen willst wie das funktioniert dann speicher dir dieses Video und kommentier Info dann schicke ich dir eine kostenlose Schritt für Schritt Anleitung",
+    hook_type: "celebrity",
+    hook_text: "Cristiano Ronaldo verdient Millionen mit Affiliate Marketing",
+    structure: "long_educational_steps_cta",
+    cta_type: "save_comment",
+    get engagement_rate() { return ((this.stats.likes + this.stats.comments + this.stats.saves) / this.stats.plays * 100).toFixed(2); }
+  }
+];
+
+// ============================================================
+// PATTERN DATA
+// ============================================================
+const hookTypes = {
+  income_claim: { label: "Income Claim", icon: "💰", color: "var(--accent)", examples: ["18K verdient", "27K in 2 Wochen", "5000 Euro in 14 Tagen"], tagClass: "tag-green" },
+  provocation: { label: "Provokation", icon: "🔥", color: "var(--orange)", examples: ["dümmster Weg", "wenn du nichts kannst", "mit KI und Lego"], tagClass: "tag-orange" },
+  best_of: { label: "Best-Of", icon: "🏆", color: "var(--yellow)", examples: ["bester Nebenjob 2026"], tagClass: "tag-yellow" },
+  fomo: { label: "FOMO/Scarcity", icon: "⏰", color: "var(--danger)", examples: ["3 Sekunden weiterscrollen"], tagClass: "tag-orange" },
+  celebrity: { label: "Celebrity", icon: "⭐", color: "var(--purple)", examples: ["Cristiano Ronaldo"], tagClass: "tag-purple" },
+  system: { label: "System-Pitch", icon: "⚙️", color: "var(--blue)", examples: ["du brauchst ein anderes System", "du brauchst keinen Nebenjob"], tagClass: "tag-blue" }
+};
+
+const structures = {
+  short_hook_method_cta: {
+    label: "Hook → Methode → CTA",
+    description: "Kurze Videos (23–43s). Direkt auf den Punkt. Hook, schnelle Erklärung, sofortiger CTA.",
+    duration: "20–43 Sekunden",
+    color: "var(--accent)"
+  },
+  long_hook_proof_skeptic_method_cta: {
+    label: "Hook → Proof → Skeptiker-Brecher → Methode → CTA",
+    description: "Lange Videos (60–99s). Income-Beweis, entkräftet Zweifel, erklärt Methode, CTA.",
+    duration: "60–99 Sekunden",
+    color: "var(--orange)"
+  },
+  long_educational_steps_cta: {
+    label: "Hook → Problem → Schritt-für-Schritt → CTA",
+    description: "Educational-Format. Erklärt den Prozess Schritt für Schritt mit konkretem Beispiel.",
+    duration: "44–134 Sekunden",
+    color: "var(--blue)"
+  }
+};
+
+const ctaTypes = {
+  comment_info: { label: '"Kommentier Info"', description: "Häufigste Variante. Trigger-Wort in Kommentaren.", color: "var(--accent)" },
+  follow_comment: { label: '"Folge mir + Kommentier"', description: "Doppelter CTA. Follower + Engagement.", color: "var(--orange)" },
+  save_comment: { label: '"Speicher + Kommentier"', description: "Retention CTA. Video wird gespeichert.", color: "var(--purple)" },
+  dm_info: { label: '"DM mir Info"', description: "Direct Message CTA. Persönlicher Kontakt.", color: "var(--blue)" }
+};
+
+// ============================================================
+// HELPERS
+// ============================================================
+function formatNumber(n) {
+  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n/1000).toFixed(1) + 'K';
+  return n.toString();
+}
+
+function engagementClass(rate) {
+  rate = parseFloat(rate);
+  if (rate >= 5) return 'engagement-high';
+  if (rate >= 3) return 'engagement-mid';
+  return 'engagement-low';
+}
+
+function durationLabel(d) {
+  if (d <= 30) return 'Kurz';
+  if (d <= 60) return 'Mittel';
+  return 'Lang';
+}
+
+// ============================================================
+// TAB SWITCHING
+// ============================================================
+function switchTab(tab) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.querySelector(`.nav-tab[data-tab="${tab}"]`).classList.add('active');
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function renderDashboard() {
+  const totalPlays = videos.reduce((s,v) => s + v.stats.plays, 0);
+  const totalLikes = videos.reduce((s,v) => s + v.stats.likes, 0);
+  const totalComments = videos.reduce((s,v) => s + v.stats.comments, 0);
+  const totalSaves = videos.reduce((s,v) => s + v.stats.saves, 0);
+  const avgER = (videos.reduce((s,v) => s + parseFloat(v.engagement_rate), 0) / videos.length).toFixed(2);
+  const topVideo = videos.reduce((best, v) => parseFloat(v.engagement_rate) > parseFloat(best.engagement_rate) ? v : best);
+
+  document.getElementById('dashboard-stats').innerHTML = `
+    <div class="stat-card"><div class="label">Gesamt-Views</div><div class="value">${formatNumber(totalPlays)}</div><div class="change up">11 Videos analysiert</div></div>
+    <div class="stat-card"><div class="label">Gesamt-Likes</div><div class="value">${formatNumber(totalLikes)}</div><div class="change up">Ø ${formatNumber(Math.round(totalLikes/11))} pro Video</div></div>
+    <div class="stat-card"><div class="label">Gesamt-Kommentare</div><div class="value">${formatNumber(totalComments)}</div><div class="change up">Ø ${Math.round(totalComments/11)} pro Video</div></div>
+    <div class="stat-card"><div class="label">Ø Engagement-Rate</div><div class="value" style="color: var(--accent)">${avgER}%</div><div class="change up">${formatNumber(totalSaves)} Saves gesamt</div></div>
+  `;
+
+  // Hook type chart
+  const hookData = {};
+  Object.keys(hookTypes).forEach(k => { hookData[k] = { total: 0, count: 0 }; });
+  videos.forEach(v => {
+    hookData[v.hook_type].total += parseFloat(v.engagement_rate);
+    hookData[v.hook_type].count++;
+  });
+  const hookEntries = Object.entries(hookData).filter(([,d]) => d.count > 0).map(([k,d]) => ({
+    key: k, label: hookTypes[k].icon + ' ' + hookTypes[k].label, avg: (d.total / d.count).toFixed(2), count: d.count
+  })).sort((a,b) => b.avg - a.avg);
+  const maxHookER = Math.max(...hookEntries.map(e => parseFloat(e.avg)));
+  document.getElementById('chart-hooks').innerHTML = hookEntries.map(e => `
+    <div class="bar-row">
+      <div class="bar-label">${e.label}</div>
+      <div class="bar-track"><div class="bar-fill" style="width: ${(e.avg/maxHookER*100).toFixed(0)}%; background: ${hookTypes[e.key].color};">${e.avg}%</div></div>
+      <div class="bar-value">${e.count} Vid.</div>
+    </div>
+  `).join('');
+
+  // Length chart
+  const lenBuckets = { 'Kurz (≤30s)': { total: 0, count: 0 }, 'Mittel (31–60s)': { total: 0, count: 0 }, 'Lang (>60s)': { total: 0, count: 0 } };
+  videos.forEach(v => {
+    const er = parseFloat(v.engagement_rate);
+    if (v.duration <= 30) { lenBuckets['Kurz (≤30s)'].total += er; lenBuckets['Kurz (≤30s)'].count++; }
+    else if (v.duration <= 60) { lenBuckets['Mittel (31–60s)'].total += er; lenBuckets['Mittel (31–60s)'].count++; }
+    else { lenBuckets['Lang (>60s)'].total += er; lenBuckets['Lang (>60s)'].count++; }
+  });
+  const lenEntries = Object.entries(lenBuckets).filter(([,d]) => d.count > 0).map(([label,d]) => ({
+    label, avg: (d.total / d.count).toFixed(2), count: d.count
+  })).sort((a,b) => b.avg - a.avg);
+  const maxLenER = Math.max(...lenEntries.map(e => parseFloat(e.avg)));
+  const lenColors = ['var(--accent)', 'var(--orange)', 'var(--blue)'];
+  document.getElementById('chart-length').innerHTML = lenEntries.map((e,i) => `
+    <div class="bar-row">
+      <div class="bar-label">${e.label}</div>
+      <div class="bar-track"><div class="bar-fill" style="width: ${(e.avg/maxLenER*100).toFixed(0)}%; background: ${lenColors[i]};">${e.avg}%</div></div>
+      <div class="bar-value">${e.count} Vid.</div>
+    </div>
+  `).join('');
+
+  // CTA chart
+  const ctaData = {};
+  Object.keys(ctaTypes).forEach(k => { ctaData[k] = { total: 0, count: 0 }; });
+  videos.forEach(v => { ctaData[v.cta_type].total += parseFloat(v.engagement_rate); ctaData[v.cta_type].count++; });
+  const ctaEntries = Object.entries(ctaData).filter(([,d]) => d.count > 0).map(([k,d]) => ({
+    key: k, label: ctaTypes[k].label, avg: (d.total / d.count).toFixed(2), count: d.count
+  })).sort((a,b) => b.avg - a.avg);
+  const maxCtaER = Math.max(...ctaEntries.map(e => parseFloat(e.avg)));
+  document.getElementById('chart-cta').innerHTML = ctaEntries.map(e => `
+    <div class="bar-row">
+      <div class="bar-label">${e.label}</div>
+      <div class="bar-track"><div class="bar-fill" style="width: ${(e.avg/maxCtaER*100).toFixed(0)}%; background: ${ctaTypes[e.key].color};">${e.avg}%</div></div>
+      <div class="bar-value">${e.count} Vid.</div>
+    </div>
+  `).join('');
+
+  // Top video
+  const viralVideo = videos.find(v => v.id === '7637271807912840481');
+  document.getElementById('top-video-analysis').innerHTML = `
+    <div style="margin-bottom: 12px;">
+      <span class="tag tag-purple" style="margin-right: 6px;">VIRAL</span>
+      <span style="font-size: 13px; color: var(--text-dim);">${viralVideo.author}</span>
+    </div>
+    <div style="font-size: 16px; font-weight: 700; margin-bottom: 8px;">"${viralVideo.hook_text}"</div>
+    <div style="display: flex; gap: 16px; font-size: 13px; color: var(--text-dim); margin-bottom: 12px;">
+      <span>❤️ ${formatNumber(viralVideo.stats.likes)}</span>
+      <span>💬 ${formatNumber(viralVideo.stats.comments)}</span>
+      <span>📌 ${formatNumber(viralVideo.stats.saves)}</span>
+      <span>👁️ ${formatNumber(viralVideo.stats.plays)}</span>
+    </div>
+    <div style="font-size: 13px; line-height: 1.7; color: var(--text-dim);">
+      <strong style="color: var(--text);">Warum viral:</strong><br>
+      • Celebrity-Hook (Cristiano Ronaldo) erzeugt sofortige Aufmerksamkeit<br>
+      • Konkretes Beispiel (Amazon Partnerprogramm) macht es greifbar<br>
+      • "Save + Kommentier" CTA maximiert Saves (7.6K!)<br>
+      • 61s Länge = perfekter Sweet-Spot<br>
+      • Engagement-Rate: <span class="${engagementClass(viralVideo.engagement_rate)}" style="padding: 2px 6px; border-radius: 4px; font-weight: 700;">${viralVideo.engagement_rate}%</span>
+    </div>
+  `;
+
+  // Creator chart
+  const creators = {};
+  videos.forEach(v => {
+    if (!creators[v.author]) creators[v.author] = { total: 0, count: 0, plays: 0 };
+    creators[v.author].total += parseFloat(v.engagement_rate);
+    creators[v.author].count++;
+    creators[v.author].plays += v.stats.plays;
+  });
+  const creatorEntries = Object.entries(creators).map(([name, d]) => ({
+    name, avg: (d.total / d.count).toFixed(2), count: d.count, plays: d.plays
+  })).sort((a,b) => b.avg - a.avg);
+  const maxCreatorER = Math.max(...creatorEntries.map(e => parseFloat(e.avg)));
+  const creatorColors = ['var(--accent)', 'var(--orange)', 'var(--purple)'];
+  document.getElementById('chart-creators').innerHTML = creatorEntries.map((e,i) => `
+    <div class="bar-row">
+      <div class="bar-label">${e.name}</div>
+      <div class="bar-track"><div class="bar-fill" style="width: ${(e.avg/maxCreatorER*100).toFixed(0)}%; background: ${creatorColors[i]};">${e.avg}% (${e.count} Videos, ${formatNumber(e.plays)} Views)</div></div>
+      <div class="bar-value">${e.avg}%</div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// MUSTER-ANALYSE
+// ============================================================
+function renderAnalysis() {
+  // Hook types
+  document.getElementById('hook-types-grid').innerHTML = Object.entries(hookTypes).map(([key, ht]) => {
+    const vids = videos.filter(v => v.hook_type === key);
+    const avgER = vids.length > 0 ? (vids.reduce((s,v) => s + parseFloat(v.engagement_rate), 0) / vids.length).toFixed(2) : '0';
+    return `
+      <div class="card">
+        <div style="font-size: 24px; margin-bottom: 8px;">${ht.icon}</div>
+        <div style="font-size: 15px; font-weight: 700; margin-bottom: 4px;">${ht.label}</div>
+        <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 10px;">${vids.length} Video${vids.length !== 1 ? 's' : ''} | Ø ${avgER}% ER</div>
+        <div style="display: flex; flex-direction: column; gap: 4px;">
+          ${ht.examples.map(ex => `<div style="font-size: 12px; color: var(--text-muted); padding: 4px 8px; background: var(--bg); border-radius: 4px;">"${ex}"</div>`).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Structures
+  document.getElementById('structures-grid').innerHTML = Object.entries(structures).map(([key, s]) => {
+    const vids = videos.filter(v => v.structure === key);
+    const avgER = vids.length > 0 ? (vids.reduce((sum,v) => sum + parseFloat(v.engagement_rate), 0) / vids.length).toFixed(2) : '0';
+    return `
+      <div class="card" style="border-left: 3px solid ${s.color};">
+        <div style="font-size: 15px; font-weight: 700; margin-bottom: 6px;">${s.label}</div>
+        <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 8px;">${s.duration}</div>
+        <div style="font-size: 13px; color: var(--text-dim); line-height: 1.6; margin-bottom: 10px;">${s.description}</div>
+        <div style="font-size: 12px; color: var(--text-muted);">${vids.length} Videos | Ø ${avgER}% ER</div>
+      </div>
+    `;
+  }).join('');
+
+  // CTA types
+  document.getElementById('cta-types-grid').innerHTML = Object.entries(ctaTypes).map(([key, ct]) => {
+    const vids = videos.filter(v => v.cta_type === key);
+    const avgER = vids.length > 0 ? (vids.reduce((s,v) => s + parseFloat(v.engagement_rate), 0) / vids.length).toFixed(2) : '0';
+    return `
+      <div class="card" style="border-top: 3px solid ${ct.color};">
+        <div style="font-size: 14px; font-weight: 700; margin-bottom: 4px;">${ct.label}</div>
+        <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 8px;">${ct.description}</div>
+        <div style="font-size: 12px; color: var(--text-muted);">${vids.length} Videos | Ø ${avgER}% ER</div>
+      </div>
+    `;
+  }).join('');
+
+  // Correlations
+  const bestHook = Object.entries(hookTypes).map(([key]) => {
+    const vids = videos.filter(v => v.hook_type === key);
+    return { key, avg: vids.length > 0 ? vids.reduce((s,v) => s + parseFloat(v.engagement_rate), 0) / vids.length : 0 };
+  }).sort((a,b) => b.avg - a.avg)[0];
+
+  const bestStructure = Object.entries(structures).map(([key]) => {
+    const vids = videos.filter(v => v.structure === key);
+    return { key, avg: vids.length > 0 ? vids.reduce((s,v) => s + parseFloat(v.engagement_rate), 0) / vids.length : 0 };
+  }).sort((a,b) => b.avg - a.avg)[0];
+
+  const bestCTA = Object.entries(ctaTypes).map(([key]) => {
+    const vids = videos.filter(v => v.cta_type === key);
+    return { key, avg: vids.length > 0 ? vids.reduce((s,v) => s + parseFloat(v.engagement_rate), 0) / vids.length : 0 };
+  }).sort((a,b) => b.avg - a.avg)[0];
+
+  document.getElementById('correlations').innerHTML = `
+    <div class="grid-3">
+      <div style="padding: 16px; background: var(--bg); border-radius: var(--radius-sm); border-left: 3px solid var(--accent);">
+        <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 4px;">Bester Hook-Typ</div>
+        <div style="font-size: 16px; font-weight: 700;">${hookTypes[bestHook.key].icon} ${hookTypes[bestHook.key].label}</div>
+        <div style="font-size: 13px; color: var(--accent); margin-top: 4px;">Ø ${bestHook.avg.toFixed(2)}% ER</div>
+      </div>
+      <div style="padding: 16px; background: var(--bg); border-radius: var(--radius-sm); border-left: 3px solid var(--orange);">
+        <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 4px;">Beste Struktur</div>
+        <div style="font-size: 16px; font-weight: 700;">${structures[bestStructure.key].label}</div>
+        <div style="font-size: 13px; color: var(--orange); margin-top: 4px;">Ø ${bestStructure.avg.toFixed(2)}% ER</div>
+      </div>
+      <div style="padding: 16px; background: var(--bg); border-radius: var(--radius-sm); border-left: 3px solid var(--purple);">
+        <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 4px;">Bester CTA-Typ</div>
+        <div style="font-size: 16px; font-weight: 700;">${ctaTypes[bestCTA.key].label}</div>
+        <div style="font-size: 13px; color: var(--purple); margin-top: 4px;">Ø ${bestCTA.avg.toFixed(2)}% ER</div>
+      </div>
+    </div>
+    <div style="margin-top: 16px; padding: 16px; background: var(--bg); border-radius: var(--radius-sm); font-size: 13px; line-height: 1.8; color: var(--text-dim);">
+      <strong style="color: var(--text);">Key Findings:</strong><br>
+      • Celebrity-Hooks haben die höchste Engagement-Rate — Bekannte Namen erzeugen sofortige Aufmerksamkeit und Saves<br>
+      • "Speicher + Kommentier" CTAs treiben die Save-Rate enorm (das virale Video hat 7.6K Saves)<br>
+      • Videos zwischen 44–66 Sekunden performen oft besser als sehr kurze oder sehr lange Formate<br>
+      • Income-Proof (Kontoauszug, Screenshots) als Skeptiker-Brecher erhöht Glaubwürdigkeit massiv<br>
+      • Die Kombination Celebrity-Hook + Educational + Save-CTA ist die stärkste Formel
+    </div>
+  `;
+}
+
+// ============================================================
+// VIDEO DATABASE
+// ============================================================
+function renderVideoDatabase(filter) {
+  const filtered = filter === 'all' ? videos : videos.filter(v => v.author === filter);
+  const sorted = [...filtered].sort((a,b) => parseFloat(b.engagement_rate) - parseFloat(a.engagement_rate));
+
+  document.getElementById('video-grid').innerHTML = sorted.map(v => `
+    <div class="video-card" data-author="${v.author}">
+      <div class="vc-header">
+        <div class="vc-author">${v.author}</div>
+        <div class="vc-duration">${v.duration}s</div>
+      </div>
+      <div class="vc-hook">"${v.hook_text}"</div>
+      <div class="vc-stats">
+        <span>❤️ ${formatNumber(v.stats.likes)}</span>
+        <span>💬 ${formatNumber(v.stats.comments)}</span>
+        <span>📌 ${formatNumber(v.stats.saves)}</span>
+        <span>👁️ ${formatNumber(v.stats.plays)}</span>
+        <span class="engagement-badge ${engagementClass(v.engagement_rate)}">${v.engagement_rate}% ER</span>
+      </div>
+      <div class="vc-tags">
+        <span class="tag ${hookTypes[v.hook_type].tagClass}">${hookTypes[v.hook_type].label}</span>
+        <span class="tag tag-blue">${structures[v.structure].label.split(' →')[0]}…</span>
+        <span class="tag tag-green">${ctaTypes[v.cta_type].label.replace(/"/g, '')}</span>
+      </div>
+      <div class="vc-transcript" id="transcript-${v.id}">${v.transcript}</div>
+      <button class="vc-toggle" onclick="toggleTranscript('${v.id}', this)">Transkript anzeigen ▾</button>
+    </div>
+  `).join('');
+}
+
+function toggleTranscript(id, btn) {
+  const el = document.getElementById('transcript-' + id);
+  el.classList.toggle('open');
+  btn.textContent = el.classList.contains('open') ? 'Transkript ausblenden ▴' : 'Transkript anzeigen ▾';
+}
+
+function filterVideos(filter, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderVideoDatabase(filter);
+}
+
+// ============================================================
+// TEMPLATE SELECT
+// ============================================================
+function populateTemplateSelect() {
+  const sel = document.getElementById('gen-template');
+  videos.forEach(v => {
+    const opt = document.createElement('option');
+    opt.value = v.id;
+    opt.textContent = `${v.author} — "${v.hook_text}" (${v.duration}s, ${v.engagement_rate}% ER)`;
+    sel.appendChild(opt);
+  });
+}
+
+// ============================================================
+// CONTENT GENERATOR — TEMPLATE ENGINE
+// ============================================================
+function generateScript() {
+  const templateId = document.getElementById('gen-template').value;
+  const hookType = document.getElementById('gen-hook').value;
+  const product = document.getElementById('gen-product').value.trim() || 'Amazon';
+  const length = document.getElementById('gen-length').value;
+  const ctaType = document.getElementById('gen-cta').value;
+  const trend = document.getElementById('gen-trend').value.trim();
+
+  // Get template video if selected
+  const templateVideo = templateId ? videos.find(v => v.id === templateId) : null;
+
+  // Generate hook based on type (rotate on refresh)
+  const hooks = generateHooks(hookType, product, trend);
+  const variation = (window._hookVariation || 0) % hooks.length;
+  const mainHook = hooks[variation];
+
+  // Generate script sections based on length
+  let sections;
+  if (length === 'short') {
+    sections = generateShortScript(mainHook, product, ctaType, trend);
+  } else if (length === 'medium') {
+    sections = generateMediumScript(mainHook, product, ctaType, trend);
+  } else {
+    sections = generateLongScript(mainHook, product, ctaType, trend);
+  }
+
+  // Generate CTA text
+  const ctaText = generateCTA(ctaType);
+
+  // Generate overlays
+  const overlays = generateOverlays(sections, length);
+
+  // Calculate scores
+  const viralScore = calculateViralityScore(hookType, length, ctaType, sections, trend);
+  const policyScore = calculatePolicyScore(sections, product);
+
+  // Build output HTML
+  const outputEl = document.getElementById('generator-output');
+  const totalTime = length === 'short' ? '20–30s' : length === 'medium' ? '40–60s' : '80–100s';
+
+  let html = `
+    <div class="scores-row">
+      ${renderScoreGauge('viral', viralScore)}
+      ${renderScoreGauge('policy', policyScore)}
+    </div>
+    <div style="display: flex; gap: 10px; margin-bottom: 16px; align-items: center; flex-wrap: wrap;">
+      <span class="tag ${hookTypes[hookType].tagClass}">${hookTypes[hookType].label}</span>
+      <span class="tag tag-blue">${totalTime}</span>
+      <span class="tag tag-green">${product}</span>
+      ${trend ? `<span class="tag tag-yellow">${trend}</span>` : ''}
+      <div style="flex: 1;"></div>
+      <button class="copy-btn" onclick="copyScript(this)">📋 Skript kopieren</button>
+    </div>
+
+    <div id="script-content">
+  `;
+
+  sections.forEach(s => {
+    html += `
+      <div class="script-section ${s.type}">
+        <div class="section-label">${s.icon} ${s.label} <span style="font-size: 10px; opacity: 0.5;">(${s.time})</span></div>
+        <div style="font-size: 14px; line-height: 1.8; color: var(--text);">${s.text}</div>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+
+  // Alternative hooks
+  html += `
+    <div style="margin-top: 24px;">
+      <div style="font-size: 14px; font-weight: 700; margin-bottom: 10px;">🔄 Alternative Hook-Varianten</div>
+      ${hooks.map((h, i) => `<div class="alt-hook"><div class="num">#${i+1}</div><div>${h}</div></div>`).join('')}
+    </div>
+  `;
+
+  // Text overlays
+  html += `
+    <div style="margin-top: 24px;">
+      <div style="font-size: 14px; font-weight: 700; margin-bottom: 10px;">🎬 Text-Overlays für CapCut</div>
+      ${overlays.map(o => `<div class="overlay-suggestion"><div class="time">${o.time}</div><div>${o.text}</div></div>`).join('')}
+    </div>
+  `;
+
+  // HeyGen section
+  html += `
+    <div class="heygen-box">
+      <div style="font-size: 14px; font-weight: 700; margin-bottom: 8px;">🤖 HeyGen Integration</div>
+      <div style="font-size: 13px; color: var(--text-dim); margin-bottom: 12px;">
+        Sende dieses Skript an HeyGen (Lisa-Avatar) per Zapier Webhook.
+      </div>
+      <button class="btn btn-orange" onclick="showHeygenModal()">🎬 An HeyGen senden</button>
+    </div>
+  `;
+
+  outputEl.innerHTML = html;
+
+  // Store current script for export
+  window.currentScript = sections.map(s => s.text).join('\n\n');
+  window.currentHeygenPrompt = buildHeygenPrompt(sections, product);
+}
+
+function generateHooks(type, product, trend) {
+  const trendSuffix = trend ? ` ${trend}` : '';
+  const hooks = {
+    income_claim: [
+      `ich habe mit ${product} in den letzten 30 Tagen über 3000 Euro verdient und ich zeig dir jetzt wie`,
+      `allein diese Woche hab ich mit ${product} wieder über 500 Euro verdient ganz nebenbei`,
+      `schau dir das an das sind meine Einnahmen mit ${product} von diesem Monat`
+    ],
+    provocation: [
+      `das hier ist ernsthaft der dümmste Weg um mit ${product} Geld zu verdienen aber er funktioniert`,
+      `wenn du nichts kannst dann mach genau das hier mit ${product}`,
+      `alle sagen das geht nicht mit ${product} Geld verdienen aber schaut hier`
+    ],
+    best_of: [
+      `okay das ist gerade der beste Nebenjob in 2026${trendSuffix} und alles was du brauchst ist ${product}`,
+      `bester Nebenjob 2026${trendSuffix} du brauchst nur ${product} und diese eine App`,
+      `das hier ist der Nebenjob den gerade alle machen${trendSuffix} mit ${product}`
+    ],
+    fomo: [
+      `wenn du jetzt 3 Sekunden weiter scrollst verlierst du die einfachste Möglichkeit mit ${product} Geld zu verdienen`,
+      `mach das JETZT bevor es zu viele machen${trendSuffix} ${product} zahlt noch richtig gut`,
+      `stopp scroll nicht weiter das hier mit ${product} verändert gerade alles`
+    ],
+    celebrity: [
+      `Fun Fact die größten Influencer verdienen Millionen mit Affiliate Marketing und du kannst das jetzt auch mit ${product}`,
+      `wusstest du dass selbst Promis Affiliate Marketing machen mit Firmen wie ${product}`,
+      `die reichsten Content Creator nutzen genau diese Methode mit Firmen wie ${product}`
+    ],
+    system: [
+      `du brauchst keinen Nebenjob du brauchst ${product} und KI`,
+      `du brauchst nicht mehr Zeit du brauchst ein anderes System und ${product} ist der Schlüssel`,
+      `vergiss klassische Nebenjobs mit ${product} und KI geht das komplett anders`
+    ]
+  };
+  return hooks[type] || hooks.best_of;
+}
+
+function generateShortScript(hook, product, ctaType, trend) {
+  return [
+    {
+      type: 'hook', icon: '🔥', label: 'HOOK', time: '0–5s',
+      text: hook
+    },
+    {
+      type: 'method', icon: '💡', label: 'METHODE', time: '5–20s',
+      text: `alles was du dafür machen musst ist dir diese eine App runterzuladen danach kombinierst du 3 Sachen miteinander du erstellst mit KI Content auf Social Media leitest die Leute auf ${product} und verdienst von dort aus Provisionen ohne eigenes Produkt ohne Startkapital und komplett von zu Hause`
+    },
+    {
+      type: 'cta', icon: '🎯', label: 'CTA', time: '20–30s',
+      text: generateCTA(ctaType)
+    }
+  ];
+}
+
+function generateMediumScript(hook, product, ctaType, trend) {
+  return [
+    {
+      type: 'hook', icon: '🔥', label: 'HOOK', time: '0–5s',
+      text: hook
+    },
+    {
+      type: 'proof', icon: '✅', label: 'BEWEIS', time: '5–15s',
+      text: `schau dir das an hier sind meine Ergebnisse mit ${product} das Ganze basiert auf Affiliate Marketing und KI das heißt du empfiehlst Produkte von ${product} und bekommst pro Verkauf eine Provision`
+    },
+    {
+      type: 'method', icon: '💡', label: 'METHODE', time: '15–40s',
+      text: `und so funktioniert es Schritt 1 du meldest dich beim Partnerprogramm von ${product} an Schritt 2 du öffnest eine KI wie ChatGPT oder Claude und lässt dir Content erstellen das dauert keine 2 Minuten Schritt 3 du postest das auf TikTok Instagram oder YouTube wenn jemand über deinen Link kauft bekommst du Geld dafür brauchst du kein eigenes Produkt kein Startkapital und keine Erfahrung nur dein Handy und eine KI`
+    },
+    {
+      type: 'cta', icon: '🎯', label: 'CTA', time: '40–50s',
+      text: generateCTA(ctaType)
+    }
+  ];
+}
+
+function generateLongScript(hook, product, ctaType, trend) {
+  return [
+    {
+      type: 'hook', icon: '🔥', label: 'HOOK', time: '0–5s',
+      text: hook
+    },
+    {
+      type: 'proof', icon: '✅', label: 'BEWEIS + SKEPTIKER-BRECHER', time: '5–25s',
+      text: `und bevor ihr alle sagt das ist Fake hier einmal der Beweis hier sind meine Einnahmen mit ${product} das mache ich komplett von zu Hause ohne Chef und ohne klassischen nine to five Job das ganze Konzept basiert auf Affiliate Marketing und KI`
+    },
+    {
+      type: 'problem', icon: '🔮', label: 'PROBLEM + LÖSUNG', time: '25–45s',
+      text: `wenn du dir unter Affiliate Marketing nichts vorstellen kannst stell dir einfach vor ein Kumpel fragt dich welches Produkt soll ich kaufen und du sagst nimm ${product} die haben die besten Angebote und weil du deinen Kumpel dahin empfohlen hast gibt dir ${product} was dafür so einfach muss man sich das vorstellen nur halt online mit KI Tools`
+    },
+    {
+      type: 'method', icon: '💡', label: 'SCHRITT-FÜR-SCHRITT', time: '45–75s',
+      text: `und ich zeig dir jetzt genau wie das funktioniert Schritt 1 du wählst ein Produkt bei ${product} und davon gibt es tausende Schritt 2 du erstellst mit KI in wenigen Minuten Content wie kurze Videos Bilder oder Texte die Leute finden das richtig gut und teilen das Schritt 3 du postest das auf Social Media ob TikTok Instagram oder YouTube und wenn jemand über deinen Link kauft bekommst du eine Provision das Geile daran du brauchst kein eigenes Produkt kein Lager kein Startkapital nur dein Handy und diese KI Tools`
+    },
+    {
+      type: 'cta', icon: '🎯', label: 'CTA', time: '75–90s',
+      text: generateCTA(ctaType)
+    }
+  ];
+}
+
+function generateCTA(type) {
+  const ctas = {
+    comment_info: 'um genau zu verstehen wie du dir das Ganze aufsetzt habe ich eine komplette Anleitung vorbereitet kommentier einfach das Wort Info und ich schicke dir alles komplett kostenlos zu wie gesagt es ist komplett kostenlos und dauert nur 10 Minuten zum Aufsetzen',
+    follow_comment: 'wenn du jetzt wissen willst wie du dir das Ganze selbst aufbauen kannst dann folge mir einfach und kommentier Info dann schicke ich dir eine kostenlose Schritt für Schritt Anleitung',
+    save_comment: 'wenn du jetzt genau wissen willst wie das funktioniert dann speicher dir dieses Video und kommentier Info dann schicke ich dir eine kostenlose Schritt für Schritt Anleitung',
+    dm_info: 'wenn du jetzt wissen willst wie du das Schritt für Schritt aufsetzt dann DM mir jetzt einmal Info und ich schick dir die Anleitung komplett kostenlos'
+  };
+  return ctas[type] || ctas.comment_info;
+}
+
+function generateOverlays(sections, length) {
+  const overlays = [];
+  sections.forEach(s => {
+    if (s.type === 'hook') {
+      overlays.push({ time: '0:00', text: '⚡ Hook-Text als Bold Overlay einblenden' });
+    }
+    if (s.type === 'proof') {
+      overlays.push({ time: s.time.split('–')[0], text: '📊 Screenshot/Beweis einblenden (Kontoauszug, Umsätze)' });
+    }
+    if (s.type === 'method') {
+      if (length === 'long') {
+        overlays.push({ time: s.time.split('–')[0], text: '1️⃣ "Schritt 1" — Text-Overlay' });
+        overlays.push({ time: '', text: '2️⃣ "Schritt 2" — Text-Overlay' });
+        overlays.push({ time: '', text: '3️⃣ "Schritt 3" — Text-Overlay' });
+      } else {
+        overlays.push({ time: s.time.split('–')[0], text: '📱 App/Website zeigen (Screen-Recording oder Bild)' });
+      }
+    }
+    if (s.type === 'cta') {
+      overlays.push({ time: s.time.split('–')[0], text: '💬 "Kommentier INFO" als großes Overlay' });
+      overlays.push({ time: '', text: '👆 Pfeil nach unten zu Kommentaren' });
+    }
+  });
+  return overlays;
+}
+
+function buildHeygenPrompt(sections, product) {
+  const scriptText = sections.map(s => s.text).join(' ');
+  return `Sprich diesen Text natürlich und authentisch, wie eine echte Person die zu einem Freund spricht. Benutze lockere Sprache, mach kurze Pausen zwischen den Sätzen. Betone wichtige Wörter wie "${product}", "kostenlos" und "Provision". Lächle leicht und schau in die Kamera. Geschwindigkeit: normal bis leicht schnell. Energie: motiviert aber nicht übertrieben.
+
+---SKRIPT START---
+${scriptText}
+---SKRIPT ENDE---`;
+}
+
+// ============================================================
+// HEYGEN MODAL & INTEGRATION
+// ============================================================
+function showHeygenModal() {
+  if (!window.currentHeygenPrompt) return;
+  document.getElementById('heygen-prompt-text').textContent = window.currentHeygenPrompt;
+  document.getElementById('heygen-modal').classList.add('active');
+  document.getElementById('heygen-status').textContent = '';
+}
+
+function closeHeygenModal() {
+  document.getElementById('heygen-modal').classList.remove('active');
+}
+
+function copyHeygenPrompt() {
+  navigator.clipboard.writeText(window.currentHeygenPrompt).then(() => {
+    const btn = event.target;
+    btn.textContent = '✅ Kopiert!';
+    setTimeout(() => { btn.textContent = '📋 Prompt kopieren'; }, 2000);
+  });
+}
+
+function sendToHeyGen() {
+  const statusEl = document.getElementById('heygen-status');
+  statusEl.innerHTML = '<span style="color: var(--yellow);">⏳ Sende an Zapier Webhook...</span>';
+
+  fetch('https://hooks.zapier.com/hooks/catch/19006437/unvo52p/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      prompt: window.currentHeygenPrompt,
+      script: window.currentScript,
+      source: 'content-maschine',
+      author: '@aic.benji',
+      timestamp: new Date().toISOString()
+    })
+  })
+  .then(r => {
+    if (r.ok) {
+      statusEl.innerHTML = '<span style="color: var(--accent);">✅ Erfolgreich an HeyGen gesendet! Der Zapier Workflow wurde gestartet.</span>';
+    } else {
+      statusEl.innerHTML = '<span style="color: var(--danger);">❌ Fehler beim Senden. Bitte manuell kopieren.</span>';
+    }
+  })
+  .catch(() => {
+    statusEl.innerHTML = '<span style="color: var(--danger);">❌ Netzwerkfehler. Bitte manuell kopieren.</span>';
+  });
+}
+
+// ============================================================
+// VIRALITÄTS-SCORE
+// ============================================================
+function calculateViralityScore(hookType, length, ctaType, sections, trend) {
+  let score = 0;
+  const details = [];
+
+  // Hook-Typ Score (max 30 Punkte) — basierend auf echten Engagement-Daten
+  const hookScores = {
+    celebrity: 30,    // 6.67% ER (Ronaldo-Video)
+    fomo: 27,         // 5.69% ER
+    system: 24,       // 4.44% ER
+    income_claim: 22, // 4.49% ER
+    provocation: 20,  // 4.18% ER
+    best_of: 18       // 3.98% ER
+  };
+  const hookPts = hookScores[hookType] || 18;
+  score += hookPts;
+  if (hookPts >= 27) details.push({type: 'pos', text: `Hook-Typ "${hookTypes[hookType].label}" hat top Engagement`});
+  else if (hookPts >= 22) details.push({type: 'warn', text: `Hook-Typ "${hookTypes[hookType].label}" performt solide`});
+  else details.push({type: 'neg', text: `Hook-Typ "${hookTypes[hookType].label}" hat unterdurchschnittliches Engagement`});
+
+  // Video-Länge Score (max 25 Punkte) — Sweet Spot 44-66s
+  const lenScores = { short: 15, medium: 25, long: 20 };
+  const lenPts = lenScores[length] || 15;
+  score += lenPts;
+  if (length === 'medium') details.push({type: 'pos', text: 'Optimale Länge (40–60s Sweet Spot)'});
+  else if (length === 'long') details.push({type: 'warn', text: 'Lange Videos brauchen starken Content zum Halten'});
+  else details.push({type: 'warn', text: 'Kurze Videos haben weniger Conversion-Potenzial'});
+
+  // CTA-Typ Score (max 20 Punkte)
+  const ctaScores = { save_comment: 20, follow_comment: 17, comment_info: 15, dm_info: 12 };
+  const ctaPts = ctaScores[ctaType] || 15;
+  score += ctaPts;
+  if (ctaPts >= 18) details.push({type: 'pos', text: '"Speicher + Kommentier" maximiert Saves & Reach'});
+  else if (ctaPts >= 15) details.push({type: 'warn', text: 'CTA ist Standard — funktioniert, aber kein Boost'});
+
+  // Proof-Element Score (max 15 Punkte)
+  const hasProof = sections.some(s => s.type === 'proof');
+  if (hasProof) { score += 15; details.push({type: 'pos', text: 'Income-Proof erhöht Glaubwürdigkeit massiv'}); }
+  else { score += 5; details.push({type: 'neg', text: 'Kein Beweis-Element — reduziert Trust'}); }
+
+  // Trend-Bonus (max 10 Punkte)
+  if (trend && trend.length > 2) { score += 10; details.push({type: 'pos', text: `Trend "${trend}" erhöht Discoverability`}); }
+  else { score += 0; details.push({type: 'warn', text: 'Kein Trend eingebaut — verschenkte Reichweite'}); }
+
+  return { score: Math.min(score, 100), details };
+}
+
+// ============================================================
+// TIKTOK-ADS-POLICY-SCORE
+// ============================================================
+function calculatePolicyScore(sections, product) {
+  let score = 100;
+  const details = [];
+  const fullText = sections.map(s => s.text).join(' ').toLowerCase();
+
+  // Check 1: Unrealistische Einkommensversprechen
+  const incomePatterns = /(\d{3,})\s*(euro|€|k\b)/i;
+  const hasSpecificIncome = incomePatterns.test(fullText);
+  if (hasSpecificIncome) {
+    score -= 15;
+    details.push({type: 'neg', text: 'Spezifische Einkommenszahlen — TikTok-Policy Risiko'});
+  } else {
+    details.push({type: 'pos', text: 'Keine konkreten Einkommensversprechen'});
+  }
+
+  // Check 2: Garantie-Sprache
+  const guaranteeWords = /(garantiert|versprochen|100\s*%\s*sicher|auf jeden fall|kein risiko)/i;
+  if (guaranteeWords.test(fullText)) {
+    score -= 20;
+    details.push({type: 'neg', text: 'Garantie-Sprache verstößt gegen TikTok-Werberichtlinien'});
+  } else {
+    details.push({type: 'pos', text: 'Keine verbotene Garantie-Sprache'});
+  }
+
+  // Check 3: "Get rich quick"-Signale
+  const grqPatterns = /(schnell reich|über nacht|sofort geld|ohne arbeit verdien|passives einkommen ohne)/i;
+  if (grqPatterns.test(fullText)) {
+    score -= 20;
+    details.push({type: 'neg', text: '"Get Rich Quick"-Sprache — hohe Sperrwahrscheinlichkeit'});
+  } else {
+    details.push({type: 'pos', text: 'Keine "Get Rich Quick"-Red Flags'});
+  }
+
+  // Check 4: Druckaufbau / Scarcity-Manipulation
+  const pressurePatterns = /(nur heute|letzte chance|nur noch \d|wird gelöscht|begrenzt verfügbar)/i;
+  if (pressurePatterns.test(fullText)) {
+    score -= 10;
+    details.push({type: 'warn', text: 'Künstliche Verknappung — vorsichtig einsetzen'});
+  } else {
+    details.push({type: 'pos', text: 'Kein übertriebener Scarcity-Druck'});
+  }
+
+  // Check 5: Altersangemessenheit
+  const ageIssues = /(egal ob du 14|egal wie alt|ab 13|ab 14|jugendliche?r?)/i;
+  if (ageIssues.test(fullText)) {
+    score -= 15;
+    details.push({type: 'neg', text: 'Ansprache von Minderjährigen — TikTok-Policy-Verstoß'});
+  } else {
+    details.push({type: 'pos', text: 'Keine problematische Altersansprache'});
+  }
+
+  // Check 6: Disclaimer vorhanden
+  const hasDisclaimer = /(ergebnisse können variieren|keine garantie|individuell|affiliate|werbung|anzeige)/i.test(fullText);
+  if (!hasDisclaimer) {
+    score -= 5;
+    details.push({type: 'warn', text: 'Kein Disclaimer — empfohlen für Transparenz'});
+  } else {
+    details.push({type: 'pos', text: 'Disclaimer/Transparenz vorhanden'});
+  }
+
+  // Check 7: Irreführende Einfachheit
+  const tooEasy = /(keine erfahrung nötig|jeder kann das|ohne vorkenntnisse|in 10 minuten|in unter \d+ minuten)/i;
+  if (tooEasy.test(fullText)) {
+    score -= 5;
+    details.push({type: 'warn', text: '"Zu einfach"-Claims — kann als irreführend gewertet werden'});
+  } else {
+    details.push({type: 'pos', text: 'Realistische Darstellung des Aufwands'});
+  }
+
+  // Check 8: Seriöses Produkt/Plattform
+  const seriousProducts = /(amazon|check24|mediamarkt|ikea|lego|digistore|copecart)/i;
+  if (seriousProducts.test(product.toLowerCase()) || seriousProducts.test(fullText)) {
+    score += 5;
+    details.push({type: 'pos', text: `Seriöse Plattform (${product}) — erhöht Vertrauen`});
+  }
+
+  return { score: Math.max(0, Math.min(score, 100)), details };
+}
+
+// ============================================================
+// SCORE GAUGE RENDERER
+// ============================================================
+function renderScoreGauge(type, scoreData) {
+  const { score, details } = scoreData;
+  const circumference = 2 * Math.PI * 36;
+  const offset = circumference - (score / 100) * circumference;
+
+  let color, label, icon;
+  if (type === 'viral') {
+    label = 'Viralitäts-Score';
+    icon = '🔥';
+    color = score >= 75 ? 'var(--accent)' : score >= 50 ? 'var(--yellow)' : 'var(--danger)';
+  } else {
+    label = 'TikTok-Policy-Score';
+    icon = '🛡️';
+    color = score >= 80 ? 'var(--accent)' : score >= 60 ? 'var(--yellow)' : 'var(--danger)';
+  }
+
+  const detailHtml = details.map(d =>
+    `<div class="policy-item"><span class="${d.type === 'pos' ? 'check' : d.type === 'neg' ? 'cross' : 'warn-icon'}">${d.type === 'pos' ? '✓' : d.type === 'neg' ? '✗' : '⚠'}</span><span class="${d.type}">${d.text}</span></div>`
+  ).join('');
+
+  return `
+    <div class="score-card">
+      <div class="score-gauge">
+        <svg width="90" height="90" viewBox="0 0 80 80">
+          <circle class="track" cx="40" cy="40" r="36"/>
+          <circle class="fill" cx="40" cy="40" r="36" stroke="${color}" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"/>
+        </svg>
+        <div class="value" style="color: ${color};">${score}</div>
+      </div>
+      <div class="score-info">
+        <h3>${icon} ${label}</h3>
+        <div class="score-detail">${detailHtml}</div>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+// REFRESH / REGENERATE
+// ============================================================
+function refreshScript() {
+  const btn = document.getElementById('refresh-btn');
+  btn.classList.add('spinning');
+  setTimeout(() => btn.classList.remove('spinning'), 600);
+
+  // Shuffle hooks by randomizing selection
+  window._hookVariation = (window._hookVariation || 0) + 1;
+  generateScript();
+}
+
+// ============================================================
+// COPY SCRIPT
+// ============================================================
+function copyScript(btn) {
+  const scriptEl = document.getElementById('script-content');
+  const text = scriptEl.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✅ Kopiert!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 Skript kopieren'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  switchTab('generator');
+  populateTemplateSelect();
+  renderDashboard();
+  renderAnalysis();
+  renderVideoDatabase('all');
+});
+
+// Close modal on outside click
+document.getElementById('heygen-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeHeygenModal();
+});
+</script>
+</body>
+</html>
